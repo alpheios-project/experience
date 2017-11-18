@@ -1,4 +1,7 @@
 # Experience
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+
 Implements support for recording of user experiences using an [Experience API](https://experienceapi.com/). It is also
 called xAPI for shorts. 
 
