@@ -1,0 +1,48 @@
+{
+  "name": "experience",
+  "version": "0.0.1",
+  "description": "Implements support for recording of user experiences using an [Experience API](https://experienceapi.com/). It is also\r called xAPI for shorts.",
+  "main": "index.js",
+  "module": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "build": "node ./support/rollup/build.js",
+    "standard": "standard",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alpheios-project/experience.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alpheios-project/experience/issues"
+  },
+  "homepage": "https://github.com/alpheios-project/experience#readme",
+  "devDependencies": {
+    "rollup": "^0.51.7",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "standard": "^10.0.3",
+    "uuid": "^3.1.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "jest": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2017,
+      "sourceType": "module"
+    }
+  },
+  "standard": {
+    "ignore": [
+      "**/dist"
+    ]
+  }
+}
