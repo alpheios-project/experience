@@ -21,9 +21,24 @@ rollup.rollup({
   plugins: defaultPlugins
 }).then(bundle => {
   bundle.write({
-    file: 'dist/experience.esm.js',
+    file: 'dist/experience.mjs',
     format: 'es',
-    sourcemap: true
+    sourcemap: false
+  })
+}).catch(reason => {
+  'use strict'
+  console.error(reason)
+})
+
+// CommonJS Bundle
+rollup.rollup({
+  input: 'src/index.js',
+  plugins: defaultPlugins
+}).then(bundle => {
+  bundle.write({
+    file: 'dist/experience.common.js',
+    format: 'cjs',
+    sourcemap: false
   })
 }).catch(reason => {
   'use strict'
