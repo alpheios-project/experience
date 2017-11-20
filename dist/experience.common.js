@@ -127,6 +127,8 @@ function v4(options, buf, offset) {
 
 var v4_1 = v4;
 
+/* global browser */
+
 /**
  * Represents an adapter for a local storage where experiences are accumulated before a batch of
  * experiences is sent to a remote server and is removed from a local storage.
@@ -152,7 +154,7 @@ class LocalStorageAdapter {
     // Keys of experience objects has an `experience_` prefix to distinguish them from objects of other types.
     let uuid = `${LocalStorageAdapter.defaults.prefix}${v4_1()}`;
 
-    window.browser.storage.local.set({[uuid]: experience}).then(
+    browser.storage.local.set({[uuid]: experience}).then(
       () => {
         console.log(`Experience has been written to the local storage successfully`);
       },
@@ -169,7 +171,7 @@ class LocalStorageAdapter {
    */
   static async readAll () {
     try {
-      return await window.browser.storage.local.get()
+      return await browser.storage.local.get()
     } catch (error) {
       console.error(`Cannot read data from the local storage because of the following error: ${error}`);
       return error
@@ -183,7 +185,7 @@ class LocalStorageAdapter {
    * if the operation succeeded. If the operation failed, the promise will be rejected with an error message.
    */
   static async remove (keys) {
-    return window.browser.storage.local.remove(keys)
+    return browser.storage.local.remove(keys)
   }
 }
 
@@ -242,11 +244,11 @@ class Monitor {
     console.log(`${property}() async method has been requested`);
     return async function (...args) {
       try {
-        // return await Monitor.logicFuntcion(this, target, property, args, monitoringData)
         return await actionFunction(this, target, property, args, monitoringData, LocalStorageAdapter)
       } catch (error) {
-        console.error(`${property}() completed with an error: ${error.value}`);
-        return error
+        // If it's an error, there will be no state and value objects. Should fix that.
+        console.error(`${property}() failed: ${error.value}`);
+        throw error
       }
     }
   }
@@ -303,18 +305,14 @@ class Monitor {
    * @param target
    * @param property
    * @param args
-   * @param monitoringData
    * @return {Promise.<*>}
    */
-  static async attachToMessage (monitor, target, property, args, monitoringData) {
-    let experience = new Experience(monitoringData.experience);
+  static async attachToMessage (monitor, target, property, args) {
     console.log(`${property}() async method has been called`);
     // First argument is always a request object, last argument is a state (Experience) object
     args[0].experience = args[args.length - 1];
     let result = await target[property].apply(monitor, args);
     console.log(`${property}() completed with success`);
-    experience.complete();
-    console.log(`${experience}`);
     return result
   }
 
@@ -324,18 +322,14 @@ class Monitor {
    * @param target
    * @param property
    * @param args
-   * @param monitoringData
    * @return {Promise.<*>}
    */
-  static async detachFromMessage (monitor, target, property, args, monitoringData) {
-    let experience = new Experience(monitoringData.experience);
+  static async detachFromMessage (monitor, target, property, args) {
     console.log(`${property}() async method has been called`);
     // First argument is an incoming request object
     args.push(Experience.readObject(args[0].experience));
     let result = await target[property].apply(monitor, args);
     console.log(`${property}() completed with success`);
-    experience.complete();
-    console.log(`${experience}`);
     return result
   }
 }

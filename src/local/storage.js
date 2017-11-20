@@ -1,3 +1,5 @@
+/* global browser */
+
 import uuidv4 from 'uuid/v4'
 
 /**
@@ -25,7 +27,7 @@ export default class LocalStorageAdapter {
     // Keys of experience objects has an `experience_` prefix to distinguish them from objects of other types.
     let uuid = `${LocalStorageAdapter.defaults.prefix}${uuidv4()}`
 
-    window.browser.storage.local.set({[uuid]: experience}).then(
+    browser.storage.local.set({[uuid]: experience}).then(
       () => {
         console.log(`Experience has been written to the local storage successfully`)
       },
@@ -42,7 +44,7 @@ export default class LocalStorageAdapter {
    */
   static async readAll () {
     try {
-      return await window.browser.storage.local.get()
+      return await browser.storage.local.get()
     } catch (error) {
       console.error(`Cannot read data from the local storage because of the following error: ${error}`)
       return error
@@ -56,6 +58,6 @@ export default class LocalStorageAdapter {
    * if the operation succeeded. If the operation failed, the promise will be rejected with an error message.
    */
   static async remove (keys) {
-    return window.browser.storage.local.remove(keys)
+    return browser.storage.local.remove(keys)
   }
 }

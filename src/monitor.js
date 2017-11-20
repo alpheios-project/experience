@@ -56,11 +56,11 @@ export default class Monitor {
     console.log(`${property}() async method has been requested`)
     return async function (...args) {
       try {
-        // return await Monitor.logicFuntcion(this, target, property, args, monitoringData)
         return await actionFunction(this, target, property, args, monitoringData, Storage)
       } catch (error) {
-        console.error(`${property}() completed with an error: ${error.value}`)
-        return error
+        // If it's an error, there will be no state and value objects. Should fix that.
+        console.error(`${property}() failed: ${error.value}`)
+        throw error
       }
     }
   }
@@ -117,18 +117,14 @@ export default class Monitor {
    * @param target
    * @param property
    * @param args
-   * @param monitoringData
    * @return {Promise.<*>}
    */
-  static async attachToMessage (monitor, target, property, args, monitoringData) {
-    let experience = new Experience(monitoringData.experience)
+  static async attachToMessage (monitor, target, property, args) {
     console.log(`${property}() async method has been called`)
     // First argument is always a request object, last argument is a state (Experience) object
     args[0].experience = args[args.length - 1]
     let result = await target[property].apply(monitor, args)
     console.log(`${property}() completed with success`)
-    experience.complete()
-    console.log(`${experience}`)
     return result
   }
 
@@ -138,18 +134,14 @@ export default class Monitor {
    * @param target
    * @param property
    * @param args
-   * @param monitoringData
    * @return {Promise.<*>}
    */
-  static async detachFromMessage (monitor, target, property, args, monitoringData) {
-    let experience = new Experience(monitoringData.experience)
+  static async detachFromMessage (monitor, target, property, args) {
     console.log(`${property}() async method has been called`)
     // First argument is an incoming request object
     args.push(Experience.readObject(args[0].experience))
     let result = await target[property].apply(monitor, args)
     console.log(`${property}() completed with success`)
-    experience.complete()
-    console.log(`${experience}`)
     return result
   }
 }
