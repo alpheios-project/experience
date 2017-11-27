@@ -58,7 +58,6 @@ export default class Monitor {
       try {
         return await actionFunction(this, target, property, args, monitoringData, Storage)
       } catch (error) {
-        // If it's an error, there will be no state and value objects. Should fix that.
         console.error(`${property}() failed: ${error.value}`)
         throw error
       }
