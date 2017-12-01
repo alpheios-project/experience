@@ -5,27 +5,17 @@
     "objectType": "Agent",
   },
   "verb": {
-    "id": "http://adlnet.gov/expapi/verbs/launched",
+    "id": "http://activitystrea.ms/schema/1.0/read",
     "display": {
-        "en": "launched"
+        "en": "read"
     }
   },
   "object": {
-      "id": "http://alpheios.net/uris/alpheios-browser-extension",
+      "id": "http://example.org/webpage.html",
       "definition": {
-          "name": {
-              "en": "Launched Alpheios Browser Extension"
-          },
-          "description": {
-              "en": "Launched the Alpheios Browser Extension"
-          },
-          "type": "http://activitystrea.ms/schema/1.0/application",
+          "type": "http://activitystrea.ms/schema/1.0/page",
       },
       "objectType": "Activity",
-      "extensions": {
-        // we might put additional information here about how the extension was launched
-        // i.e. which language was chosen, whether launched automatically by the page etc.
-      }
   },
   "context": {
     "contextActivities": {
