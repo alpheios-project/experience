@@ -138,7 +138,11 @@ export default class Monitor {
   static async detachFromMessage (monitor, target, property, args) {
     console.log(`${property}() async method has been called`)
     // First argument is an incoming request object
-    args.push(Experience.readObject(args[0].experience))
+    if (args[0].experience) {
+      args.push(Experience.readObject(args[0].experience))
+    } else {
+      console.warn(`This message has no experience data attached. Experience data will not be recorded`)
+    }
     let result = await target[property].apply(monitor, args)
     console.log(`${property}() completed with success`)
     return result
