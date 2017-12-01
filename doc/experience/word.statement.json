@@ -1,0 +1,53 @@
+{
+  "actor": {
+    "name": "Joe Doe",
+    "mbox": "mailto:joe.doe@example.org",
+    "objectType": "Agent",
+  },
+  "verb": {
+    "id": "http://id.tincanapi.com/verb/selected",
+    "display": {
+        "en": "selected"
+    }
+  },
+  "object": {
+      "id": "http://alpheios.net/uris/words/lat/mare",
+          "type": "http://id.tincanapi.com/actiitytype/vocabulary-word",
+          "description": {
+            "en": "a unique identifier for a specific word. ideally we would reuse uris from another source but for now might just coin uris which include the language code and our normalized form of the word"
+          }
+      },
+      "objectType": "Activity",
+      "extensions": {
+      }
+  },
+  "context": {
+    "contextActivities": {
+        "category": [
+            {
+                "id": "http://alpheios.net/uris/alpheios-browser-extension/v2",
+                "definition": {
+                    "type": "http://id.tincanapi.com/activitytype/source"
+                }
+            }
+        ]
+    },
+    "statement" : {
+      "objectType":"StatementRef",
+      "id": "6690e6c9-3ef0-4ed3-8b37-7f3964730bee"
+    },
+    "extensions": {
+      "http://id.tincanapi.com/extension/browser-info": {
+        "code_name": "Mozilla",
+        "name": "Netscape",
+        "version": "5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36",
+        "platform": "MacIntel",
+        "user-agent-header": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36",
+        "cookies-enabled": true
+      }
+    }
+  },
+  "id": "6690e6c9-3ef0-4ed3-8b37-7f3964730YYY",
+  "timestamp": "YYYY-MM-DDTHH:MM:SS.MMMZ",
+  "stored": "YYYY-MM-DDTHH:MM:SS.MMMZ",
+}

@@ -1,0 +1,55 @@
+{
+  "actor": {
+    "name": "Joe Doe",
+    "mbox": "mailto:joe.doe@example.org",
+    "objectType": "Agent",
+  },
+  "verb": {
+    "id": "http://adlnet.gov/expapi/verbs/launched",
+    "display": {
+        "en": "launched"
+    }
+  },
+  "object": {
+      "id": "http://alpheios.net/uris/alpheios-browser-extension",
+      "definition": {
+          "name": {
+              "en": "Launched Alpheios Browser Extension"
+          },
+          "description": {
+              "en": "Launched the Alpheios Browser Extension"
+          },
+          "type": "http://activitystrea.ms/schema/1.0/application",
+      },
+      "objectType": "Activity",
+      "extensions": {
+        // we might put additional information here about how the extension was launched
+        // i.e. which language was chosen, whether launched automatically by the page etc.
+      }
+  },
+  "context": {
+    "contextActivities": {
+        "category": [
+            {
+                "id": "http://alpheios.net/uris/alpheios-browser-extension/v2",
+                "definition": {
+                    "type": "http://id.tincanapi.com/activitytype/source"
+                }
+            }
+        ]
+    },
+    "extensions": {
+      "http://id.tincanapi.com/extension/browser-info": {
+        "code_name": "Mozilla",
+        "name": "Netscape",
+        "version": "5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36",
+        "platform": "MacIntel",
+        "user-agent-header": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36",
+        "cookies-enabled": true
+      }
+    }
+  },
+  "id": "6690e6c9-3ef0-4ed3-8b37-7f3964730bee",
+  "timestamp": "YYYY-MM-DDTHH:MM:SS.MMMZ",
+  "stored": "YYYY-MM-DDTHH:MM:SS.MMMZ",
+}
