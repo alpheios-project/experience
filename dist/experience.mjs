@@ -264,14 +264,14 @@ class Monitor {
     console.log(`${property}() async method has been called`);
     // Last item in arguments list is a transaction
     args.push(experience);
-    let resultObject = await target[property].apply(monitor, args);
+    let result = await target[property].apply(monitor, args);
     // resultObject.value is a returned message, experience object is in a `experience` property
-    experience = Experience.readObject(resultObject.value.experience);
+    experience = result.state;
     experience.complete();
     console.log(`${property}() completed with success, experience is:`, experience);
 
     storage.write(experience);
-    return resultObject
+    return result
   }
 
   /**
