@@ -1,6 +1,6 @@
 {
   "name": "alpheios-experience",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Implements support for recording of user experiences using an [Experience API](https://experienceapi.com/). It is also\r called xAPI for shorts.",
   "main": "dist/experience.common.js",
   "module": "dist/experience.esm.js",
