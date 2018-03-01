@@ -4,7 +4,7 @@
 export default class Experience {
   constructor (description) {
     this.description = description
-    this.startTime = new Date().getTime()
+    this.startTime = undefined
     this.endTime = undefined
     this.details = []
   }
@@ -23,8 +23,14 @@ export default class Experience {
     this.details.push(experience)
   }
 
+  start () {
+    this.startTime = new Date().getTime()
+    return this
+  }
+
   complete () {
     this.endTime = new Date().getTime()
+    return this
   }
 
   get duration () {
