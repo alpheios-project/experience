@@ -1,16 +1,17 @@
 {
   "name": "alpheios-experience",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Implements support for recording of user experiences using an [Experience API](https://experienceapi.com/). It is also\r called xAPI for shorts.",
   "main": "dist/experience.common.js",
-  "module": "dist/experience.esm.js",
   "directories": {
     "doc": "doc"
   },
   "scripts": {
-    "build": "node ./support/rollup/build.js",
-    "standard": "standard",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard --fix && jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "build": "standard --fix && node --experimental-modules ./node_modules/alpheios-node-build/dist/build.mjs all all lib",
+    "build-prod": "standard --fix && node --experimental-modules ./node_modules/alpheios-node-build/dist/build.mjs all production lib",
+    "build-dev": "standard --fix && node --experimental-modules ./node_modules/alpheios-node-build/dist/build.mjs all development lib",
+    "lint": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -23,11 +24,17 @@
   },
   "homepage": "https://github.com/alpheios-project/experience#readme",
   "devDependencies": {
-    "rollup": "^0.51.7",
-    "rollup-plugin-commonjs": "^8.2.6",
-    "rollup-plugin-node-resolve": "^3.0.0",
+    "alpheios-node-build": "github:alpheios-project/node-build",
     "standard": "^10.0.3",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "jest": "^22.4.3"
+  },
+  "peerDependencies": {
+    "uuid": "3.x.x"
+  },
+  "engines": {
+    "node": ">= 9.10.1",
+    "npm": ">= 5.6.0"
   },
   "eslintConfig": {
     "env": {
