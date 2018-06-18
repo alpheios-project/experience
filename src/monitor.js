@@ -2,26 +2,31 @@ import Experience from './experience'
 import Storage from './local/storage'
 
 export default class Monitor {
-  constructor (monitoringDataList) {
+  constructor (monitoringDataList, logger = null) {
     this.monitored = new Map()
     if (monitoringDataList) {
       for (let monitoringData of monitoringDataList) {
         this.monitored.set(monitoringData.monitoredFunction, monitoringData)
       }
     }
+    this.logger = logger
   }
 
-  static track (object, monitoringDataList) {
-    return new Proxy(object, new Monitor(monitoringDataList))
+  static track (object, monitoringDataList, logger = null) {
+    return new Proxy(object, new Monitor(monitoringDataList, logger))
   }
 
   get (target, property, receiver) {
     if (this.monitored.has(property)) {
       let monitoringData = this.monitored.get(property)
       if (monitoringData.hasOwnProperty('asyncWrapper')) {
-        return Monitor.asyncWrapper.call(this, target, property, monitoringData.asyncWrapper, monitoringData)
+        return Monitor.asyncWrapper.call(this, target, property, monitoringData.asyncWrapper, monitoringData, this.logger)
       } else {
-        console.error(`Only async wrappers are supported by monitor`)
+        if (this.logger) {
+          this.logger.error(`Only async wrappers are supported by monitor`)
+        } else {
+          console.error(`Only async wrappers are supported by monitor`)
+        }
       }
     }
     return target[property]
@@ -31,14 +36,29 @@ export default class Monitor {
     this.monitored.set(functionName, functionConfig)
   }
 
-  static syncWrapper (target, property, experience) {
-    console.log(`${property}() sync method has been called`)
+  static syncWrapper (target, property, experience, logger = null) {
+    if (this.logger) {
+      this.logger.log(`${property}() sync method has been called`)
+    } else {
+      console.log(`${property}() sync method has been called`)
+    }
     const origMethod = target[property]
     return function (...args) {
       let result = origMethod.apply(this, args)
-      console.log(`${property}() sync method has been completed`)
+
+      if (logger) {
+        logger.log(`${property}() sync method has been completed`)
+      } else {
+        console.log(`${property}() sync method has been completed`)
+      }
+
       experience.complete()
-      console.log(`${experience}`)
+
+      if (logger) {
+        logger.log(`${experience}`)
+      } else {
+        console.log(`${experience}`)
+      }
       return result
     }
   }
@@ -52,13 +72,21 @@ export default class Monitor {
    * @param monitoringData
    * @return {Function}
    */
-  static asyncWrapper (target, property, actionFunction, monitoringData) {
-    console.log(`${property}() async method has been requested`)
+  static asyncWrapper (target, property, actionFunction, monitoringData, logger = null) {
+    if (logger) {
+      logger.log(`${property}() async method has been requested`)
+    } else {
+      console.log(`${property}() async method has been requested`)
+    }
     return async function (...args) {
       try {
         return await actionFunction(this, target, property, args, monitoringData, Storage)
       } catch (error) {
-        console.error(`${property}() failed: ${error.value}`)
+        if (logger) {
+          logger.error(`${property}() failed: ${error.value}`)
+        } else {
+          console.error(`${property}() failed: ${error.value}`)
+        }
         throw error
       }
     }

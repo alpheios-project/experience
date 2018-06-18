@@ -23,16 +23,24 @@ export default class LocalStorageAdapter {
    * Stores a single experience to the local storage.
    * @param {Experience} experience - An experience object to be saved.
    */
-  static write (experience) {
+  static write (experience, logger = null) {
     // Keys of experience objects has an `experience_` prefix to distinguish them from objects of other types.
     let uuid = `${LocalStorageAdapter.defaults.prefix}${uuidv4()}`
 
     browser.storage.local.set({[uuid]: experience}).then(
       () => {
-        console.log(`Experience has been written to the local storage successfully`)
+        if (logger) {
+          logger.log(`Experience has been written to the local storage successfully`)
+        } else {
+          console.log(`Experience has been written to the local storage successfully`)
+        }
       },
       (error) => {
-        console.error(`Cannot write experience to the local storage because of the following error: ${error}`)
+        if (logger) {
+          logger.error(`Cannot write experience to the local storage because of the following error: ${error}`)
+        } else {
+          console.error(`Cannot write experience to the local storage because of the following error: ${error}`)
+        }
       }
     )
   }

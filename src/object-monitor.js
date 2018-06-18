@@ -13,7 +13,8 @@ const eventTypes = {
 }
 
 export default class ObjectMonitor {
-  constructor (options = {}) {
+  constructor (options = {}, logger = null) {
+    this.logger = logger
     this.experienceDescription = ''
     for (let event of Object.values(ObjectMonitor.events)) {
       this[event] = []
@@ -37,8 +38,8 @@ export default class ObjectMonitor {
     return eventTypes
   }
 
-  static track (object, options) {
-    return new Proxy(object, new ObjectMonitor(options))
+  static track (object, options, logger = null) {
+    return new Proxy(object, new ObjectMonitor(options, logger))
   }
 
   get (target, property) {
@@ -59,11 +60,20 @@ export default class ObjectMonitor {
   experienceAction (action) {
     if (action.action === ObjectMonitor.actions.START) {
       this.experience = new Experience(this.experienceDescription).start()
-      console.log(`Experience started`)
+      if (this.logger) {
+        this.logger.log(`Experience started`)
+      } else {
+        console.log(`Experience started`)
+      }
     } else if (action.action === ObjectMonitor.actions.STOP) {
       this.experience.complete()
-      console.log(`Experience completed:`, this.experience)
-      Storage.write(this.experience)
+
+      if (this.logger) {
+        this.logger.log(`Experience completed:`, this.experience)
+      } else {
+        console.log(`Experience completed:`, this.experience)
+      }
+      Storage.write(this.experience, this.logger)
     }
   }
 }

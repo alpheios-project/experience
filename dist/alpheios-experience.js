@@ -364,16 +364,24 @@ class LocalStorageAdapter {
    * Stores a single experience to the local storage.
    * @param {Experience} experience - An experience object to be saved.
    */
-  static write (experience) {
+  static write (experience, logger = null) {
     // Keys of experience objects has an `experience_` prefix to distinguish them from objects of other types.
     let uuid = `${LocalStorageAdapter.defaults.prefix}${uuid_v4__WEBPACK_IMPORTED_MODULE_0___default()()}`
 
     browser.storage.local.set({[uuid]: experience}).then(
       () => {
-        console.log(`Experience has been written to the local storage successfully`)
+        if (logger) {
+          logger.log(`Experience has been written to the local storage successfully`)
+        } else {
+          console.log(`Experience has been written to the local storage successfully`)
+        }
       },
       (error) => {
-        console.error(`Cannot write experience to the local storage because of the following error: ${error}`)
+        if (logger) {
+          logger.error(`Cannot write experience to the local storage because of the following error: ${error}`)
+        } else {
+          console.error(`Cannot write experience to the local storage because of the following error: ${error}`)
+        }
       }
     )
   }
@@ -422,26 +430,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Monitor {
-  constructor (monitoringDataList) {
+  constructor (monitoringDataList, logger = null) {
     this.monitored = new Map()
     if (monitoringDataList) {
       for (let monitoringData of monitoringDataList) {
         this.monitored.set(monitoringData.monitoredFunction, monitoringData)
       }
     }
+    this.logger = logger
   }
 
-  static track (object, monitoringDataList) {
-    return new Proxy(object, new Monitor(monitoringDataList))
+  static track (object, monitoringDataList, logger = null) {
+    return new Proxy(object, new Monitor(monitoringDataList, logger))
   }
 
   get (target, property, receiver) {
     if (this.monitored.has(property)) {
       let monitoringData = this.monitored.get(property)
       if (monitoringData.hasOwnProperty('asyncWrapper')) {
-        return Monitor.asyncWrapper.call(this, target, property, monitoringData.asyncWrapper, monitoringData)
+        return Monitor.asyncWrapper.call(this, target, property, monitoringData.asyncWrapper, monitoringData, this.logger)
       } else {
-        console.error(`Only async wrappers are supported by monitor`)
+        if (this.logger) {
+          this.logger.error(`Only async wrappers are supported by monitor`)
+        } else {
+          console.error(`Only async wrappers are supported by monitor`)
+        }
       }
     }
     return target[property]
@@ -451,14 +464,29 @@ class Monitor {
     this.monitored.set(functionName, functionConfig)
   }
 
-  static syncWrapper (target, property, experience) {
-    console.log(`${property}() sync method has been called`)
+  static syncWrapper (target, property, experience, logger = null) {
+    if (this.logger) {
+      this.logger.log(`${property}() sync method has been called`)
+    } else {
+      console.log(`${property}() sync method has been called`)
+    }
     const origMethod = target[property]
     return function (...args) {
       let result = origMethod.apply(this, args)
-      console.log(`${property}() sync method has been completed`)
+
+      if (logger) {
+        logger.log(`${property}() sync method has been completed`)
+      } else {
+        console.log(`${property}() sync method has been completed`)
+      }
+
       experience.complete()
-      console.log(`${experience}`)
+
+      if (logger) {
+        logger.log(`${experience}`)
+      } else {
+        console.log(`${experience}`)
+      }
       return result
     }
   }
@@ -472,13 +500,21 @@ class Monitor {
    * @param monitoringData
    * @return {Function}
    */
-  static asyncWrapper (target, property, actionFunction, monitoringData) {
-    console.log(`${property}() async method has been requested`)
+  static asyncWrapper (target, property, actionFunction, monitoringData, logger = null) {
+    if (logger) {
+      logger.log(`${property}() async method has been requested`)
+    } else {
+      console.log(`${property}() async method has been requested`)
+    }
     return async function (...args) {
       try {
         return await actionFunction(this, target, property, args, monitoringData, _local_storage__WEBPACK_IMPORTED_MODULE_1__["default"])
       } catch (error) {
-        console.error(`${property}() failed: ${error.value}`)
+        if (logger) {
+          logger.error(`${property}() failed: ${error.value}`)
+        } else {
+          console.error(`${property}() failed: ${error.value}`)
+        }
         throw error
       }
     }
@@ -599,7 +635,8 @@ const eventTypes = {
 }
 
 class ObjectMonitor {
-  constructor (options = {}) {
+  constructor (options = {}, logger = null) {
+    this.logger = logger
     this.experienceDescription = ''
     for (let event of Object.values(ObjectMonitor.events)) {
       this[event] = []
@@ -623,8 +660,8 @@ class ObjectMonitor {
     return eventTypes
   }
 
-  static track (object, options) {
-    return new Proxy(object, new ObjectMonitor(options))
+  static track (object, options, logger = null) {
+    return new Proxy(object, new ObjectMonitor(options, logger))
   }
 
   get (target, property) {
@@ -645,11 +682,20 @@ class ObjectMonitor {
   experienceAction (action) {
     if (action.action === ObjectMonitor.actions.START) {
       this.experience = new _experience__WEBPACK_IMPORTED_MODULE_0__["default"](this.experienceDescription).start()
-      console.log(`Experience started`)
+      if (this.logger) {
+        this.logger.log(`Experience started`)
+      } else {
+        console.log(`Experience started`)
+      }
     } else if (action.action === ObjectMonitor.actions.STOP) {
       this.experience.complete()
-      console.log(`Experience completed:`, this.experience)
-      _local_storage__WEBPACK_IMPORTED_MODULE_1__["default"].write(this.experience)
+
+      if (this.logger) {
+        this.logger.log(`Experience completed:`, this.experience)
+      } else {
+        console.log(`Experience completed:`, this.experience)
+      }
+      _local_storage__WEBPACK_IMPORTED_MODULE_1__["default"].write(this.experience, this.logger)
     }
   }
 }
