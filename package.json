@@ -25,9 +25,9 @@
   "homepage": "https://github.com/alpheios-project/experience#readme",
   "devDependencies": {
     "alpheios-node-build": "github:alpheios-project/node-build",
-    "standard": "^10.0.3",
-    "uuid": "^3.1.0",
-    "jest": "^22.4.3"
+    "jest": "^23.2.0",
+    "standard": "^11.0.1",
+    "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "uuid": "3.x.x"
